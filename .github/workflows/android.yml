@@ -2,9 +2,9 @@ name: Android CI/CD
 
 on:
   push:
-    branches: [ "main", "master" ] # आपके मेन ब्रांच का नाम यहाँ लिखें
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -21,14 +21,17 @@ jobs:
         cache: gradle
 
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      # यहाँ हमने 'android' फोल्डर का पाथ दिया है
+      run: chmod +x android/gradlew
 
     - name: Build with Gradle
+      # यहाँ हमने working-directory सेट की है ताकि Gradle सही जगह काम करे
+      working-directory: ./android
       run: ./gradlew assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
-        path: app/build/outputs/apk/debug/app-debug.apk
-
+        # APK का पाथ भी अब 'android' फोल्डर के अंदर होगा
+        path: android/app/build/outputs/apk/debug/app-debug.apk
