@@ -24,8 +24,10 @@ jobs:
         echo "Going into android folder..."
         cd android
         
+        echo "Creating a dummy local.properties file to fix the error..."
+        touch local.properties
+        
         echo "Building APK..."
-        # gradlew की जगह हम डायरेक्ट gradle कमांड का इस्तेमाल कर रहे हैं
         gradle assembleDebug
 
     - name: Upload APK
