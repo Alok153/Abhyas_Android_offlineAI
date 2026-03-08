@@ -1,4 +1,4 @@
-name: Android Auto Build
+name: Flutter APK Build
 
 on:
   push:
@@ -19,19 +19,23 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build APK using Global Gradle
-      run: |
-        echo "Going into android folder..."
-        cd android
-        
-        echo "Creating a dummy local.properties file to fix the error..."
-        touch local.properties
-        
-        echo "Building APK..."
-        gradle assembleDebug
+    # यह स्टेप GitHub सर्वर पर Flutter इंस्टॉल करेगा
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
 
+    # यह प्रोजेक्ट की सभी ज़रूरी फाइल्स (packages) डाउनलोड करेगा
+    - name: Install Dependencies
+      run: flutter pub get
+
+    # यह Flutter का इस्तेमाल करके APK बनाएगा
+    - name: Build APK
+      run: flutter build apk --debug
+
+    # बनी हुई APK फाइल को डाउनलोड के लिए उपलब्ध कराएगा
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: my-android-app
-        path: '**/*.apk'
+        name: my-flutter-app
+        path: build/app/outputs/flutter-apk/app-debug.apk
